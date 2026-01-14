@@ -30,13 +30,6 @@ const PDFForm = () => {
     //handleform or handlebutton
     let handleForm=async(event)=>{
         event.preventDefault();
-        //apend files
-        let data=new FormData();
-        data.append("pdf",PdfFile);
-        data.append("Language",options.Language);
-        data.append("Format",options.Format);
-
-
 
         //alert for file size
         if(PdfFile.size>=5*1024*1024){
@@ -44,9 +37,15 @@ const PDFForm = () => {
             return;
         }
 
+        //apend files
+        let data=new FormData();
+        data.append("pdf",PdfFile);
+        data.append("Language",options.Language);
+        data.append("Format",options.Format);
+
         //data send to a backend
         try{
-          let response=await fetch('/api/SummaryGenerator',{
+          let response=await fetch(`${process.env.NEXT_PUBLIC_Backend_URL}/SummaryRoute/`,{
             method:'POST',
             body:data
           });
