@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-
+import GenerateSummary from "@/Components/GenerateSummary"
+import Loading from "@/Components/Loading"
 const PDFForm = () => {
 //for handle pdf
     let [PdfFile,SetPdfFile]=useState(null);
@@ -11,8 +12,11 @@ const PDFForm = () => {
         Format:"Paragraph"
     });
 
+    let [summary,setSummary]=useState("")
+
 //show and hide option
     let [ShowOptions,SetShowOptions]=useState(false);
+    let [loading,setloading]=useState(false)
 
     //handlae pdf
     let HandlePdfFile=(e)=>{
@@ -29,6 +33,7 @@ const PDFForm = () => {
 
     //handleform or handlebutton
     let handleForm=async(event)=>{
+        setloading(true)
         event.preventDefault();
 
         //alert for file size
@@ -52,15 +57,23 @@ const PDFForm = () => {
           if(!response.ok){
             console.log("Error in response");
           }
+          if(response.status===429){
+            alert("plz try again after 24 hours")
+          }
           let result=await response.json();
           alert("the pdf has been send and its name is " + PdfFile.name + ", and the language is " + options.Language + ", and the format is " + options.Format);
           console.log("Response from server ",result);
+          setSummary(result.Summary)
         }        
         catch(error){
           alert("Error while sending data to server");
             console.log("Error while sending data to server ",error);
         }
+        finally{
+          setloading(false)
+        }
            }
+           
 
     const FileSize = (bytes) => {
   return (bytes / (1024 * 1024)).toFixed(2) + " MB";
@@ -135,10 +148,19 @@ const PDFForm = () => {
         <option value="Paragraph">Paragraph</option>
          <option value="Bullet Points">Bullet Points</option> 
          </select> 
-        <button onClick={handleForm} className="border-2 border-solid broder-black mt-10 p-4 rounded-xl bg-blue-400 hover:bg-blue-500 duration-300 transition  w-full font-bold  ">Generate Summary</button>
+        <button onClick={handleForm} 
+        className={`border-2 border-solid broder-black mt-10 p-4 rounded-xl   w-full font-bold 
+        ${loading?"opacity-30 bg-blue-200":"opacity-100 bg-blue-400 hover:bg-blue-500 duration-300 transition"}
+        `}>
+          {loading?"AI is Summarizing ...":"Generate Summary"}
+          </button>
          </div>
          )}
 
+         { summary &&  
+         <GenerateSummary summary={summary} />
+         }
+        {loading && <Loading/>}
     </div>
 
     )
