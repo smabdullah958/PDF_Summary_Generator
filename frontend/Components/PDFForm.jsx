@@ -8,7 +8,7 @@ const PDFForm = () => {
     //for other opton
     let [options,SetOptions]=useState({
         Language:"English",
-        Format:"Paragrph"
+        Format:"Paragraph"
     });
 
 //show and hide option
@@ -53,6 +53,7 @@ const PDFForm = () => {
             console.log("Error in response");
           }
           let result=await response.json();
+          alert("the pdf has been send and its name is " + PdfFile.name + ", and the language is " + options.Language + ", and the format is " + options.Format);
           console.log("Response from server ",result);
         }        
         catch(error){
