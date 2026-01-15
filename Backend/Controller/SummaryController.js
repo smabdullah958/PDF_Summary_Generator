@@ -1,5 +1,6 @@
 
 let PDFTextExtractor=require("../Utils/TextExtractor")
+let LLMClient=require("../Utils/LLMClient");
 
 let SummaryController=async(req,res)=>{
     try{
@@ -15,10 +16,20 @@ let SummaryController=async(req,res)=>{
         }
 
         // pdf text extractor
-      let result=await  PDFTextExtractor(req.file.buffer)
-        
+      let result=await  PDFTextExtractor(req.file.buffer);
+      if(!result.text){
+        return res.status(400).json({error:"empty pdf"});
+      }
+     let Summary = await LLMClient({
+       text:result.text,
+       Language,
+       Format 
+    });
+    
+
         console.log("the file daa is ", result.text);
-        res.status(200).json({Message:"Data received successfully"});
+        console.log("the summary of a file isa ",Summary) 
+        res.status(200).json({Message:"Data received successfully",Summary});
     }
     catch(err){
         console.log("internal eror",err)
