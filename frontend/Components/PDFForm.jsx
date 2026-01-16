@@ -157,7 +157,7 @@ const PDFForm = () => {
          </div>
          )}
 
-         { summary &&  
+         { summary && !loading && 
          <GenerateSummary summary={summary} />
          }
         {loading && <Loading/>}

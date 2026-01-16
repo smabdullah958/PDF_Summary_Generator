@@ -7,7 +7,7 @@ let PDFTextExtractor=async(buffer)=>{
             })
             let result=await parser.getText();
             await parser.destroy();
-            return result   
+            return result
     }
     catch(error){
         console.log("file si not present",error)

@@ -22,9 +22,9 @@ let SummaryController=async(req,res)=>{
       }
      let Summary = await LLMClient({
        text:result.text,
-       Language,
-       Format 
-    });
+       language:Language,
+       format:Format 
+    }); 
     
 
         console.log("the file daa is ", result.text);
@@ -33,7 +33,10 @@ let SummaryController=async(req,res)=>{
     }
     catch(err){
         console.log("internal eror",err)
-        res.status(500).json({Error:"Internal Server Error"});
+        if(err?.status===429){
+            return res.status(429).json({error:"AI has high load. Please try  again after 24 hour"})
+        }
+        res.status(500).json({Error:"Please try  again after some time"});
     }
 }
 
