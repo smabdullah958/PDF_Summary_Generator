@@ -1,6 +1,6 @@
 let { GoogleGenAI } = require("@google/genai");
 
-const ai = new GoogleGenAI({apiKey:process.env.Gemini_API_1||Gemini_API_2});
+const ai = new GoogleGenAI({apiKey:process.env.Gemini_API_1||Gemini_API_2||Gemini_API_3});
 
 
 let LLMClient=async({text,language,format})=>{
@@ -42,14 +42,27 @@ You are NOT allowed to translate unless explicitly told.
 `;
 
 
-    let response=await ai.models.generateContent({
+    let response=await ai.models.generateContentStream({
         model:"gemini-3-flash-preview",
         contents:prompt,
         config:{
             systemInstruction:systemPrompt
         }
     })
-    let summary="no summary generated"
+      let summary = "";
+
+  for await (const chunks of response) {
+    if (chunks.type === "message" && chunks.delta) {
+      summary += chunks.delta; // append each chunk
+      if (onChunk) {
+        onChunk(chunks.delta); // optional: callback to update UI in real-time
+      }
+    } else if (chunks.type === "response_completed") {
+      console.log("Streaming completed!");
+    }
+  }
+
+
         if (response?.candidates?.length > 0 &&  response.candidates[0]?.content?.parts?.length > 0) {
          summary = response.candidates?.[0]?.content?.parts[0]?.text || "Please try  again after some time";
     }   

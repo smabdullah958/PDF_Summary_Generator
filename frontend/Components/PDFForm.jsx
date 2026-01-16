@@ -3,6 +3,9 @@
 import { useState } from "react";
 import GenerateSummary from "@/Components/GenerateSummary"
 import Loading from "@/Components/Loading"
+import ButtonLoader from "@/Components/ButtonLoader"
+import toast from 'react-hot-toast';
+
 const PDFForm = () => {
 //for handle pdf
     let [PdfFile,SetPdfFile]=useState(null);
@@ -38,8 +41,8 @@ const PDFForm = () => {
 
         //alert for file size
         if(PdfFile.size>=5*1024*1024){
-            alert("File size exceeds 5MB limit.");
-            return;
+          toast.error("File size exceeds 5MB limit.");
+          return;
         }
 
         //apend files
@@ -54,19 +57,18 @@ const PDFForm = () => {
             method:'POST',
             body:data
           });
-          if(!response.ok){
-            console.log("Error in response");
-          }
           if(response.status===429){
-            alert("plz try again after 24 hours")
+          toast.error("AI has heavy load. Please try again after 24 hours");
+          return;
+          }
+          if(!response.ok){
+             toast.error("AI has heavy load. Please try again after some time");
+            return;
           }
           let result=await response.json();
-          alert("the pdf has been send and its name is " + PdfFile.name + ", and the language is " + options.Language + ", and the format is " + options.Format);
-          console.log("Response from server ",result);
           setSummary(result.Summary)
         }        
         catch(error){
-          alert("Error while sending data to server");
             console.log("Error while sending data to server ",error);
         }
         finally{
@@ -149,10 +151,11 @@ const PDFForm = () => {
          <option value="Bullet Points">Bullet Points</option> 
          </select> 
         <button onClick={handleForm} 
-        className={`border-2 border-solid broder-black mt-10 p-4 rounded-xl   w-full font-bold 
-        ${loading?"opacity-30 bg-blue-200":"opacity-100 bg-blue-400 hover:bg-blue-500 duration-300 transition"}
+        className={` mt-10 p-4 rounded-xl   w-full font-bold 
+        ${loading?"opacity-30 bg-linear-to-r  from-blue-400 to-purple-400":"opacity-100 bg-linear-to-r  from-blue-500 to-purple-500 hover:cursor-pointer  duration-300 transition"}
         `}>
-          {loading?"AI is Summarizing ...":"Generate Summary"}
+          {loading ? <ButtonLoader/>
+          :"Generate Summary"}
           </button>
          </div>
          )}
