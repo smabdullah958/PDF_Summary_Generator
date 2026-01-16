@@ -1,7 +1,10 @@
 let { GoogleGenAI } = require("@google/genai");
 
-const ai = new GoogleGenAI({apiKey:process.env.Gemini_API_1||Gemini_API_2||Gemini_API_3});
-
+let apiKeys=[
+  process.env.Gemini_API_1,
+  process.env.Gemini_API_2,
+  process.env.Gemini_API_3
+].filter(Boolean)
 
 let LLMClient=async({text,language,format})=>{
  
@@ -10,7 +13,7 @@ TASK:
 Summarize the given text.
 
 STRICT RULES (NO EXCEPTIONS):
-1. Output language MUST be ${language}.
+1. Output langua  ge MUST be ${language}.
 2. Do not use any other language
 3. Output format MUST be ${format}.
 
@@ -41,32 +44,31 @@ You MUST follow instructions exactly.
 You are NOT allowed to translate unless explicitly told.
 `;
 
+let lastError
 
-    let response=await ai.models.generateContentStream({
+  for (let key of apiKeys) {
+    try {
+         const ai = new GoogleGenAI({ apiKey: key });
+        let response=await ai.models.generateContent({
         model:"gemini-3-flash-preview",
         contents:prompt,
         config:{
             systemInstruction:systemPrompt
         }
     })
-      let summary = "";
-
-  for await (const chunks of response) {
-    if (chunks.type === "message" && chunks.delta) {
-      summary += chunks.delta; // append each chunk
-      if (onChunk) {
-        onChunk(chunks.delta); // optional: callback to update UI in real-time
-      }
-    } else if (chunks.type === "response_completed") {
-      console.log("Streaming completed!");
-    }
-  }
-
-
-        if (response?.candidates?.length > 0 &&  response.candidates[0]?.content?.parts?.length > 0) {
+    let summary="no summary generated"
+     if (response?.candidates?.length > 0 &&  response.candidates[0]?.content?.parts?.length > 0) {
          summary = response.candidates?.[0]?.content?.parts[0]?.text || "Please try  again after some time";
     }   
 console.log(summary)
 return summary;
+    } catch (err) {
+      lastError = err;
+      console.warn(`API key failed: ${key}, trying next...`);
+      continue; // try the next key
+    }
+  }
+return "Please try  again after some time"
 }
+
 module.exports=LLMClient
