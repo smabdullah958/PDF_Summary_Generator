@@ -42,6 +42,7 @@ const PDFForm = () => {
     //alert for file size
     if (PdfFile.size >= 5 * 1024 * 1024) {
       toast.error("File size exceeds 5MB limit.");
+      setloading(false);
       return;
     }
 
