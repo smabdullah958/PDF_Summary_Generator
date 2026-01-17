@@ -121,7 +121,7 @@ const PDFForm = () => {
       {ShowOptions && PdfFile && (
         <div
           className="mt-10 2xl:mt-20 w-72 sm:w-96 xl:w-[40vw] 2xl:w-[30vw] bg-white p-10 
-   rounded-3xl "
+   rounded-3xl text-black opacity-100"
         >
           <h1 className="font-bold text-xl mb-5">Summary options </h1>
           Language{" "}
