@@ -3,11 +3,12 @@ let LLMClient = require("../Utils/LLMClient");
 
 let SummaryController = async (req, res) => {
   try {
-    let { Language, Format } = req.body;
-    console.log(Language, Format, req.file);
+    let { Language, Format, Length } = req.body;
+    console.log(Length);
+    console.log(Language, Format, req.file, Length);
 
     //validation
-    if (!Language || !Format) {
+    if (!Language || !Format || !Length) {
       return res
         .status(400)
         .json({ Error: "Language and Format are required" });
@@ -28,6 +29,7 @@ let SummaryController = async (req, res) => {
     let Summary = await LLMClient({
       text: result.text,
       language: Language,
+      length: Length,
       format: Format,
     });
 

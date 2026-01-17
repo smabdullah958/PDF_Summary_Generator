@@ -13,6 +13,7 @@ const PDFForm = () => {
   let [options, SetOptions] = useState({
     Language: "English",
     Format: "Paragraph",
+    Length: "Short",
   });
 
   let [summary, setSummary] = useState("");
@@ -51,7 +52,7 @@ const PDFForm = () => {
     data.append("pdf", PdfFile);
     data.append("Language", options.Language);
     data.append("Format", options.Format);
-
+    data.append("Length", options.Length);
     //data send to a backend
     try {
       let response = await fetch(
@@ -142,10 +143,20 @@ const PDFForm = () => {
             onChange={HandleDropDown}
             value={options.Format}
             name="Format"
-            className="border-2 border-solid broder-black mt-2 p-3 rounded-xl bg-gray-100 w-full "
+            className="border-2 border-solid broder-black mt-2 mb-5 p-3 rounded-xl bg-gray-100 w-full "
           >
             <option value="Paragraph">Paragraph</option>
             <option value="Bullet Points">Bullet Points</option>
+          </select>
+          Length{" "}
+          <select
+            onChange={HandleDropDown}
+            value={options.Length}
+            name="Length"
+            className="border-2 border-solid broder-black mt-2 p-3 rounded-xl bg-gray-100 w-full "
+          >
+            <option value="Short">Short</option>
+            <option value="Detail">Detail</option>
           </select>
           <button
             onClick={handleForm}
