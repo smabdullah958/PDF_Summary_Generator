@@ -5,6 +5,7 @@ An AI-powered web application that allows users to upload a PDF file and generat
 The project focuses on simplicity, speed, and multilingual support.
 
 **Project Overview**
+
 The AI Powered PDF Summary Generator enables users to:
 
 Upload a PDF document
@@ -13,7 +14,7 @@ Choose different summary formats
 Translate summaries into multiple languages
 This project is being built as a learning + portfolio project to explore Next.js full-stack capabilities and LLM integration.
 
-**Planned Features**
+**Features**
 Upload PDF files
 AI-generated summaries
 Summary format options:
