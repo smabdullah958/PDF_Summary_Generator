@@ -26,7 +26,10 @@ Urdu
 Pashto
 Fast and responsive UI
 Secure API key handling (LLM called from backend)
+
+
 **Tech Stack**
+
 Frontend
 Next.js
 Tailwind CSS
